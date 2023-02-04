@@ -472,9 +472,9 @@ average of all orders.
 
 WITH
   average_spent AS (
-  SELECT
-    AVG(total_amt_usd) avg_spent
-  FROM orders
+    SELECT
+      AVG(total_amt_usd) avg_spent
+    FROM orders
   ),
 
   above_average_total_spent AS (
