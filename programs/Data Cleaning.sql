@@ -239,3 +239,83 @@ ON a.id = o.account_id
 WHERE o.total IS NULL;
 
 /*
+4. Use COALESCE to fill in each of the qty and usd columns with 0 for the table
+in 1
+*/
+
+SELECT
+  a.name,
+  a.website,
+  a.primary_poc,
+  COALESCE(o.standard_qty, 0) standard_qty_filled,
+  COALESCE(o.gloss_qty, 0) gloss_qty_filled,
+  COALESCE(o.poster_qty, 0) poster_qty_filled,
+  COALESCE(o.total, 0) total_filled,
+  COALESCE(o.standard_amt_usd, 0) standard_amt_usd_filled,
+  COALESCE(o.gloss_amt_usd, 0) gloss_amt_usd_filled,
+  COALESCE(o.poster_amt_usd, 0) poster_amt_usd_filled,
+  COALESCE(o.total_amt_usd, 0) total_amt_usd_filled
+FROM accounts a
+LEFT JOIN orders o
+ON a.id = o.account_id
+WHERE o.total IS NULL;
+
+/*
+5. Run the query in 1 with the WHERE removed and COUNT the number of ids
+*/
+
+SELECT COUNT(a.id) number_of_ids
+FROM accounts a
+LEFT JOIN orders o
+ON a.id = o.account_id;
+
+/*
+6. Run the query in 5, but with the COALESCE function used in questions 2
+through 4
+*/
+
+WITH filled AS (
+  SELECT
+  	COALESCE(o.id, a.id) filled_id,
+    *
+  FROM accounts a
+  LEFT JOIN orders o
+  ON a.id = o.account_id
+)
+
+SELECT COUNT(f.filled_id) number_of_ids
+FROM filled f;
+
+WITH filled AS (
+  SELECT
+  	COALESCE(o.id, a.id) filled_id,
+    COALESCE(o.account_id, a.id) account_id_filled,
+    *
+  FROM accounts a
+  LEFT JOIN orders o
+  ON a.id = o.account_id
+)
+
+SELECT COUNT(f.filled_id) number_of_ids
+FROM filled f;
+
+WITH filled AS (
+  SELECT
+    a.name,
+    a.website,
+    a.primary_poc,
+    COALESCE(o.standard_qty, 0) standard_qty_filled,
+    COALESCE(o.gloss_qty, 0) gloss_qty_filled,
+    COALESCE(o.poster_qty, 0) poster_qty_filled,
+    COALESCE(o.total, 0) total_filled,
+    COALESCE(o.standard_amt_usd, 0) standard_amt_usd_filled,
+    COALESCE(o.gloss_amt_usd, 0) gloss_amt_usd_filled,
+    COALESCE(o.poster_amt_usd, 0) poster_amt_usd_filled,
+    COALESCE(o.total_amt_usd, 0) total_amt_usd_filled
+  FROM accounts a
+  LEFT JOIN orders o
+  ON a.id = o.account_id
+)
+
+SELECT COUNT(f.name)
+FROM filled f;
